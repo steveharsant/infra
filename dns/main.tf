@@ -2,7 +2,7 @@ terraform {
   backend "remote" {
     organization = "steveharsant"
     workspaces {
-      name = "infra"
+      name = "cloudflare_dns"
     }
   }
   required_providers {
