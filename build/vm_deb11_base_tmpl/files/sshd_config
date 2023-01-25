@@ -1,0 +1,23 @@
+### General ###
+AcceptEnv LANG LC_*
+Include /etc/ssh/sshd_config.d/*.conf
+Port 22
+PrintMotd no
+Subsystem       sftp    /usr/lib/openssh/sftp-server
+
+### Logging ###
+# LogLevel INFO
+# SyslogFacility AUTH
+
+### Authentication ###
+KbdInteractiveAuthentication no
+LoginGraceTime 2m
+MaxAuthTries 3
+MaxSessions 2
+PasswordAuthentication no
+PermitEmptyPasswords no
+PermitRootLogin prohibit-password
+PubkeyAuthentication yes
+# StrictModes yes
+UsePAM yes
+X11Forwarding no

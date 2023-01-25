@@ -1,8 +1,12 @@
 # Cache objects
-packer_cache/
+**/packer_cache/
 
 # Crash log
 crash.log
 
 # For built boxes
 *.box
+
+# Ignore dev & sensitive files
+**/credentials.pkr.hcl
+**/preseed_dev.cfg
