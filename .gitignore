@@ -10,3 +10,4 @@ crash.log
 # Ignore dev & sensitive files
 **/credentials.pkr.hcl
 **/preseed_dev.cfg
+**/*.env

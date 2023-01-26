@@ -1,0 +1,24 @@
+version: '3.4'
+services:
+
+  emby:
+    image: lscr.io/linuxserver/emby:latest
+    container_name: emby
+    environment:
+      - SMB_HOSTNAME=${SMB_HOSTNAME}
+      - SMB_SHARENAME=${SMB_SHARENAME}
+      - SMB_USERNAME=${SMB_USERNAME}
+      - SMB_PASSWORD=${SMB_PASSWORD}
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+    volumes:
+      - /media:/media
+      - /srv/docker/emby:/config
+      - /srv/docker/emby/custom-cont-init.d:/custom-cont-init.d:ro
+    ports:
+      - 8096:8096
+    cap_add:
+      - SYS_ADMIN
+      - DAC_READ_SEARCH
+    restart: unless-stopped
