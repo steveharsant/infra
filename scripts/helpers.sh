@@ -18,8 +18,8 @@ log() {
 
   if [ $# -eq 2 ]; then
     case "${1,,}" in
-      'error') colour=$RED
-               level='ERROR'
+       'fail') colour=$RED
+               level='FAIL'
                stream='>&2' ;;
       'warn' ) colour=$ORANGE
                level='WARN' ;;
