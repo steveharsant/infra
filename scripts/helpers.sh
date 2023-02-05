@@ -22,15 +22,15 @@ log() {
                level='ERROR'
                stream='>&2' ;;
       'warn' ) colour=$ORANGE
-               level='WARN ' ;;
+               level='WARN' ;;
       'pass' ) colour=$GREEN
-               level='PASS ' ;;
+               level='PASS' ;;
       'info' ) colour=$BLUE
-               level='INFO ' ;;
+               level='INFO' ;;
       'debug') colour=$YELLOW
                level='DEBUG' ;;
            * ) colour=$BLUE
-               level='INFO ' ;;
+               level='INFO' ;;
     esac
 
     message=$2
