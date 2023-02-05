@@ -37,7 +37,7 @@ while getopts 'ab:c:d:g:h:i:m:no:p:r:s:t:uv' opt; do
     r) ram="$OPTARG"; swap="$OPTARG" ;;
     s) storage="$OPTARG" ;;
     t) template="$OPTARG" ;;
-    u) unprivileged='-unprivileged' ;;
+    u) unprivileged='true' ;;
     v) DEBUG='true' ;;
     *) log error "Invalid option:  -$OPTARG"; exit 1 ;;
   esac
@@ -51,6 +51,7 @@ nesting=${nesting:-0}
 ram=${ram:-1024}
 swap=${swap:-1024}
 storage=${storage:-local}
+unprivileged=${unprivileged:-false}
 ip_address="$(echo "$gateway" | cut -d'.' -f1-3).$id"
 
 log debug "bridge is: $bridge"
@@ -61,11 +62,15 @@ log debug "hostname is: $hostname"
 log debug "id is: $id"
 log debug "ip_address is: $ip_address"
 log debug "mounts is: $mounts"
+log debug "nesting is: $nesting"
 log debug "ram is: $ram"
 log debug "storage is: $storage"
 log debug "swap is: $swap"
 log debug "template is: $template"
 
+if [[ "$unprivileged" == 'true' ]]; then
+  log warn '-u is currently unused and reserved for future use.'
+fi
 
 if [[ $template =~ [0-9] ]]; then
 
@@ -98,9 +103,10 @@ if pct set "$id" \
      -hostname "$hostname" \
      -memory "$ram" \
      --net0 "name=eth0,bridge=$bridge,firewall=1,gw=$gateway,ip=$ip_address/24,type=veth" \
-     -swap "$ram" "$unprivileged"
+     -swap "$ram"
 then log pass "Set container $id configuration"; fi
 
+log "Resizng root filesystem to ${disk}G"
 if pct resize "$id "rootfs "${disk}G"
 then log pass "Resized root filesystem to $disk"; fi
 
