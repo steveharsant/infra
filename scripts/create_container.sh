@@ -8,7 +8,7 @@
 # This script is meant for automatiom platforms
 # like Jenkins, TeamCity, etc.
 
-set -x
+set -e
 
 script_path="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
@@ -22,21 +22,20 @@ fi
 
 log 'Starting container creation'
 
-while getopts 'ab:c:d:g:h:i:m:n:o:p:r:s:t:uv' opt; do
+while getopts 'ab:c:d:g:h:i:m:no:p:r:s:t:uv' opt; do
   case $opt in
     a) tunnel_adapter='true' ;;
-    b) bridge="${OPTARG:-vmbr0}" ;;
-    c) cores="${OPTARG:-2}" ;;
-    d) disk="${OPTARG:-8}" ;;
+    b) bridge="$OPTARG" ;;
+    c) cores="$OPTARG" ;;
+    d) disk="$OPTARG" ;;
     g) gateway="$OPTARG" ;;
     h) hostname="$OPTARG" ;;
     i) id="$OPTARG" ;;
     m) mounts="$OPTARG" ;;
     n) nesting=1;;
-    o) os_type="${OPTARG:-debian}" ;;
     p) password="$OPTARG" ;;
-    r) ram="${OPTARG:-1024}"; swap="${OPTARG:-1024}" ;;
-    s) storage="${OPTARG:-local}" ;;
+    r) ram="$OPTARG"; swap="$OPTARG" ;;
+    s) storage="$OPTARG" ;;
     t) template="$OPTARG" ;;
     u) unprivileged='-unprivileged' ;;
     v) DEBUG='true' ;;
@@ -44,7 +43,14 @@ while getopts 'ab:c:d:g:h:i:m:n:o:p:r:s:t:uv' opt; do
   esac
 done
 
+# Set defaults if missing
+bridge=${bridge:-vmbr0}
+cores=${cores:-2}
+disk=${disk:-8}
 nesting=${nesting:-0}
+ram=${ram:-1024}
+swap=${swap:-1024}
+storage=${storage:-local}
 ip_address="$(echo "$gateway" | cut -d'.' -f1-3).$id"
 
 log debug "bridge is: $bridge"
@@ -55,7 +61,6 @@ log debug "hostname is: $hostname"
 log debug "id is: $id"
 log debug "ip_address is: $ip_address"
 log debug "mounts is: $mounts"
-log debug "os_type is: $os_type"
 log debug "ram is: $ram"
 log debug "storage is: $storage"
 log debug "swap is: $swap"
@@ -92,10 +97,12 @@ if pct set "$id" \
      -features "nesting=$nesting" \
      -hostname "$hostname" \
      -memory "$ram" \
-     -net "name=eth0,bridge=$bridge,firewall=1,gw=$gateway,ip=$ip_address/24,type=veth" \
-     -rootfs "size=$disk" \
-     -swap "$ram $unprivileged"
+     --net0 "name=eth0,bridge=$bridge,firewall=1,gw=$gateway,ip=$ip_address/24,type=veth" \
+     -swap "$ram" "$unprivileged"
 then log pass "Set container $id configuration"; fi
+
+if pct resize "$id "rootfs "${disk}G"
+then log pass "Resized root filesystem to $disk"; fi
 
 # Mounts
 # Each mount should be seperated by a semi-colon(;)
@@ -130,7 +137,7 @@ fi
 
 pct start "$id"
 sleep 10
-pct exec "$id" -- bash -c "echo '$password' | passwd --stdin root; $exec_commands"
+pct exec "$id" -- bash -c "echo 'root:$password' | chpasswd; $exec_commands"
 pct reboot "$id"
 
 log pass "Completed createion of container $id"
