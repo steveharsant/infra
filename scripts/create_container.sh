@@ -3,10 +3,9 @@
 # shellcheck disable=SC2016
 # shellcheck disable=SC2164
 
-# Creates Proxmox containers from default template or
-# user created template using the pct cli tool.
-# This script is meant for automatiom platforms
-# like Jenkins, TeamCity, etc.
+
+
+version='1.0.0'
 
 set -e
 
@@ -20,16 +19,48 @@ else
   exit 1
 fi
 
+print_help(){
+  printf "
+Proxmox Container Creator\n
+version: $version\n
+Creates Proxmox containers from a default template or a user created template
+using the pct cli tool. This script is designed with automatiom platforms in
+mind like Jenkins, TeamCity, etc.\n
+USAGE:
+      create_container.sh [OPTIONS]\n
+OPTIONS:
+      -a                  Enable tunnel adapter (/dev/net/tun) in container
+      -b [string]         Set network bridge (default: vmbr0)
+      -c [integer]        Set number of cores (default: 2)
+      -d [integer]        Set disk size in GB (default: 8)
+      -g [IP address]     Set gateway (required)
+      -h                  Print help message
+      -H [string]         Set Hostname (required)
+      -i [integer]        Set container id (required)
+      -m [string]         Specify bindmounts from host (syntax: /path/on/container1,/path/on/host1;/path/on/container2,/path/on/host2)
+      -n                  Enable nesting
+      -p [string]         Set password for root user (required)
+      -r [integer]        Set ram amount in MB (default: 1024)
+      -s [string]         Specify storage location (default: local)
+      -S                  Enable start on boot
+      -t [integer/string] Specify template (either template id for custom template, or path on disk for default template)
+      -u                  Set container privilege (Currently does nothing)
+      -v                  Print version
+      -V                  Enable verbose messages (debugging)\n
+"
+}
+
 log 'Starting container creation'
 
-while getopts 'ab:c:d:g:h:i:m:no:p:r:s:St:uv' opt; do
+while getopts 'ab:c:d:g:hH:i:m:np:r:s:St:uvV' opt; do
   case $opt in
     a) tunnel_adapter='true' ;;
     b) bridge="$OPTARG" ;;
     c) cores="$OPTARG" ;;
     d) disk="$OPTARG" ;;
     g) gateway="$OPTARG" ;;
-    h) hostname="$OPTARG" ;;
+    h) print_help;;
+    H) hostname="$OPTARG" ;;
     i) id="$OPTARG" ;;
     m) mounts="$OPTARG" ;;
     n) nesting=1;;
@@ -39,7 +70,8 @@ while getopts 'ab:c:d:g:h:i:m:no:p:r:s:St:uv' opt; do
     S) start_on_boot=1 ;;
     t) template="$OPTARG" ;;
     u) unprivileged='true' ;;
-    v) DEBUG='true' ;;
+    v) printf "$version\n" ;;
+    V) DEBUG='true' ;;
     *) log fail "Invalid option:  -$OPTARG"; exit 1 ;;
   esac
 done
