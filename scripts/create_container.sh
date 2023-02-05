@@ -107,7 +107,8 @@ if pct set "$id" \
 then log pass "Set container $id configuration"; fi
 
 log "Resizng root filesystem to ${disk}G"
-if pct resize "$id "rootfs "${disk}G"
+
+if pct resize "$id" rootfs "${disk}G"
 then log pass "Resized root filesystem to $disk"; fi
 
 # Mounts
