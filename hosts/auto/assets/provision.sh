@@ -11,8 +11,8 @@ apt-get update
 apt-get upgrade -y -o Dpkg::Options::=--force-confdef
 
 # Install basic packages
-apt-get install -y apt-transport-https ca-certificates cifs-utils \
-                   curl git gnupg2 jq lsb-release python3 python3-pip \
+apt-get install -y apt-transport-https ca-certificates cifs-utils curl \
+                   default-jre git gnupg2 jq lsb-release python3 python3-pip \
                    software-properties-common unzip wget vim zip
 
 # Install docker cli
