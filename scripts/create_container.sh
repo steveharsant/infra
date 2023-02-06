@@ -3,9 +3,7 @@
 # shellcheck disable=SC2016
 # shellcheck disable=SC2164
 
-
-
-version='1.0.0'
+version='1.0.1'
 
 set -e
 
@@ -13,6 +11,7 @@ script_path="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 if [ -f "$script_path/helpers.sh" ]; then
   source "$script_path/helpers.sh"
+  log debug 'Sourced helper.sh'
 
 else
   printf 'helpers.sh file missing\n'
@@ -48,9 +47,10 @@ OPTIONS:
       -v                  Print version
       -V                  Enable verbose messages (debugging)\n
 "
+  exit 0
 }
 
-log 'Starting container creation'
+log debug 'Reading arguments to variables'
 
 while getopts 'ab:c:d:g:hH:i:m:np:r:s:St:uvV' opt; do
   case $opt in
@@ -75,6 +75,8 @@ while getopts 'ab:c:d:g:hH:i:m:np:r:s:St:uvV' opt; do
     *) log fail "Invalid option:  -$OPTARG"; exit 1 ;;
   esac
 done
+
+log debug 'Setting variable defaults'
 
 # Set defaults if missing
 bridge=${bridge:-vmbr0}
@@ -102,6 +104,8 @@ log debug "start_on_boot is: $start_on_boot"
 log debug "storage is: $storage"
 log debug "swap is: $swap"
 log debug "template is: $template"
+
+log 'Starting container creation'
 
 if [[ "$unprivileged" == 'true' ]]; then
   log warn '-u is currently unused and reserved for future use.'
