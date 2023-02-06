@@ -5,11 +5,10 @@ LABEL \
   "version"="1.0.0" \
   "description"="Modified minimal TeamCity agent with custom configuration"
 
-ARG TEAMCITY_HOME="/opt/buildagent"
+ARG TEAMCITY_URL
+ENV TEAMCITY_URL=${TEAMCITY_URL}
 
 COPY assets/provision.sh /tmp/provision.sh
-COPY assets/teamcity_buildagent.zip /tmp/teamcity_buildagent.zip
-
 RUN bash /tmp/provision.sh
 
 ENTRYPOINT /opt/buildagent/bin/agent.sh run
