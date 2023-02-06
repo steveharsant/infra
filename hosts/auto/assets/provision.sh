@@ -7,8 +7,8 @@ export DEBIAN_FRONTEND=noninteractive
 ln -fs /usr/share/zoneinfo/Europe/London /etc/localtime
 
 # OS upgrade
-apt-get update \
-apt-get upgrade -y -o Dpkg::Options::=--force-confdef \
+apt-get update
+apt-get upgrade -y -o Dpkg::Options::=--force-confdef
 
 # Install basic packages
 apt-get install -y apt-transport-https ca-certificates cifs-utils \
@@ -18,7 +18,7 @@ apt-get install -y apt-transport-https ca-certificates cifs-utils \
 # Install docker cli
 mkdir -p /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
-  gpg --dearmor -o /etc/apt/keyrings/docker.gpg \
+  gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
       https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" \
