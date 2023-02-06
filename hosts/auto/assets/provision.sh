@@ -13,7 +13,7 @@ apt-get upgrade -y -o Dpkg::Options::=--force-confdef
 # Install basic packages
 apt-get install -y apt-transport-https ca-certificates cifs-utils \
                    curl git gnupg2 jq lsb-release python3 python3-pip \
-                   software-properties-common unzip vim zip
+                   software-properties-common unzip wget vim zip
 
 # Install docker cli
 mkdir -p /etc/apt/keyrings
