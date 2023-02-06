@@ -17,8 +17,8 @@ services:
     container_name: agent1
     environment:
       - SERVER_URL=${TEAMCITY_SERVER_URL}
-      - AGENT_NAME = agent1
-      - AGENT_TOKEN = ${TEAMCITY_AGENT_TOKEN}
+      - AGENT_NAME=agent1
+      - AGENT_TOKEN=${TEAMCITY_AGENT_TOKEN}
     volumes:
       - /srv/docker/teamcity/agent1:/data/teamcity_agent/conf
 
@@ -29,8 +29,8 @@ services:
     container_name: agent2
     environment:
       - SERVER_URL=${TEAMCITY_SERVER_URL}
-      - AGENT_NAME = agent2
-      - AGENT_TOKEN = ${TEAMCITY_AGENT_TOKEN}
+      - AGENT_NAME=agent2
+      - AGENT_TOKEN=${TEAMCITY_AGENT_TOKEN}
     volumes:
       - /srv/docker/teamcity/agent2:/data/teamcity_agent/conf
 
@@ -41,7 +41,7 @@ services:
     container_name: agent3
     environment:
       - SERVER_URL=${TEAMCITY_SERVER_URL}
-      - AGENT_NAME = agent3
-      - AGENT_TOKEN = ${TEAMCITY_AGENT_TOKEN}
+      - AGENT_NAME=agent3
+      - AGENT_TOKEN=${TEAMCITY_AGENT_TOKEN}
     volumes:
       - /srv/docker/teamcity/agent3:/data/teamcity_agent/conf
