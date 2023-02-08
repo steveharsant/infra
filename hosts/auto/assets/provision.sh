@@ -35,7 +35,7 @@ apt-get install -y powershell
 
 # Install TeamCity agent
 curl -L "$TEAMCITY_URL/update/buildAgent.zip" --output /tmp/buildAgent.zip
-unzip /tmp/teamcity_buildagent.zip -d /opt/buildagent
+unzip /tmp/buildAgent.zip -d /opt/buildagent
 cp /opt/buildagent/conf/buildAgent.dist.properties /opt/buildagent/conf/buildAgent.properties
 sed -i "s%serverUrl=http://localhost:8111/%serverUrl=$TEAMCITY_URL/%g" /opt/buildagent/conf/buildAgent.properties
 chmod +x /opt/buildagent/bin/*.sh
