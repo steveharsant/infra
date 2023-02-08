@@ -15,6 +15,7 @@ services:
       - server
     image: custom-minimal-agent:latest
     container_name: agent1
+    hostname: agent1
     environment:
       - SERVER_URL=${TEAMCITY_SERVER_URL}
       - AGENT_NAME=agent1
@@ -26,6 +27,7 @@ services:
       - server
     image: custom-minimal-agent:latest
     container_name: agent2
+    hostname: agent2
     environment:
       - SERVER_URL=${TEAMCITY_SERVER_URL}
       - AGENT_NAME=agent2
@@ -37,6 +39,7 @@ services:
       - server
     image: custom-minimal-agent:latest
     container_name: agent3
+    hostname: agent3
     environment:
       - SERVER_URL=${TEAMCITY_SERVER_URL}
       - AGENT_NAME=agent3
