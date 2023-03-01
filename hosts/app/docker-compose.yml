@@ -93,17 +93,14 @@ services:
       - 21027:21027/udp
     restart: unless-stopped
 
-  wyl:
-    image: aceberg/watchyourlan:latest
-    container_name: wyl
-    hostname: wyl
-    environment:
-      - IFACE=eth0
-      - TZ=Europe/London
-      - THEME=darkly
-      - GUIIP=${GUIIP}
-      - GUIPORT=8840
+  wizarr:
+    container_name: wizarr
+    image: ghcr.io/wizarrrr/wizarr
+    ports:
+      - 5690:5690
     volumes:
-      - /srv/docker/wyl:/data
-    network_mode: 'host'
-    restart: unless-stopped
+      - /srv/docker/wizarr:/data/database
+    environment:
+      - APP_URL=https://invite.sharsant.com
+      - DISABLE_BUILTIN_AUTH=false
+      - TZ=Europe/London
