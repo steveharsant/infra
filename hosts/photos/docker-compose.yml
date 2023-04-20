@@ -31,3 +31,8 @@ services:
       - /srv/docker/photoview/api_cache:/app/cache
       - /users/steve/pictures/:/photos/steve:ro
       - /users/miki/photos/:/photos/miki:ro
+    logging:
+      driver: "json-file"
+      options:
+        max-file: 5
+        max-size: 25m
