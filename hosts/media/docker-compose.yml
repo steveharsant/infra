@@ -87,31 +87,31 @@ services:
     ports:
       - 8989:8989
     restart: unless-stopped
-  ###* Disabled for now *###
-  # tdarr:
-  #   container_name: tdarr
-  #   image: ghcr.io/haveagitgat/tdarr:latest
-  #   restart: unless-stopped
-  #   ports:
-  #     - 8265:8265 # webUI port
-  #     - 8266:8266 # server port
-  #     - 8267:8267 # Internal node port
-  #     - 8268:8268 # Extra node port
-  #   environment:
-  #     - internalNode=false
-  #     - nodeID=InternalNode
-  #     - PGID=1000
-  #     - PUID=1000
-  #     - serverIP=0.0.0.0
-  #     - serverPort=8266
-  #     - TZ=Europe/London
-  #     - UMASK_SET=002
-  #     - webUIPort=8265
-  #   volumes:
-  #     - /srv/docker/tdarr/server:/app/server
-  #     - /srv/docker/tdarr/config:/app/configs
-  #     - /srv/docker/tdarr/logs:/app/logs
-  #     - /media:/media
+
+  tdarr:
+    container_name: tdarr
+    image: ghcr.io/haveagitgat/tdarr:latest
+    restart: unless-stopped
+    ports:
+      - 8265:8265 # webUI port
+      - 8266:8266 # server port
+      - 8267:8267 # Internal node port
+      - 8268:8268 # Extra node port
+    environment:
+      - internalNode=false
+      - nodeID=InternalNode
+      - PGID=1000
+      - PUID=1000
+      - serverIP=0.0.0.0
+      - serverPort=8266
+      - TZ=Europe/London
+      - UMASK_SET=002
+      - webUIPort=8265
+    volumes:
+      - /srv/docker/tdarr/server:/app/server
+      - /srv/docker/tdarr/config:/app/configs
+      - /srv/docker/tdarr/logs:/app/logs
+      - /media:/media
 
   # ytdl:
   #   image: tzahi12345/youtubedl-material:latest
