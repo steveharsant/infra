@@ -29,7 +29,7 @@ services:
       - PGID=1000
       - TZ=Australia/Sydney
     volumes:
-      - /mnt/ext0/media:/mnt/ext0/media
+      - /mnt/ext0/media:/media
       - /srv/docker/emby:/config
       - /srv/docker/emby/custom-cont-init.d:/custom-cont-init.d:ro
     ports:
