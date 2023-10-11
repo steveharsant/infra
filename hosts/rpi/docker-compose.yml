@@ -78,6 +78,27 @@ services:
       - 7878:7878
     restart: unless-stopped
 
+  samba:
+    image: dperson/samba
+    container_name: samba
+    environment:
+      TZ: 'GMT'
+    ports:
+      - "139:139/tcp"
+      - "445:445/tcp"
+    read_only: true
+    tmpfs:
+      - /tmp
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    volumes:
+      - /mnt/ext0/downloads:/downloads:z
+      - /srv/docker:/docker:z
+      - /mnt/ext0/media:/media:z
+      - /mnt/ext0/users:/users:z
+    command: '-s "docker;/docker;yes;no;no;${SMB_USER};${SMB_USER};${SMB_USER};docker" -s "downloads;/downloads;yes;no;no;${SMB_USER};${SMB_USER};${SMB_USER};downloads" -s "media;/media;yes;no;no;${SMB_USER};${SMB_USER};${SMB_USER};media" -s "users;/users;yes;no;no;${SMB_USER};${SMB_USER};${SMB_USER};users" -u "${SMB_USER};${SMB_PASS}" -p'
+
   sonarr:
     image: linuxserver/sonarr:latest
     container_name: sonarr
