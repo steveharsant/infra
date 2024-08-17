@@ -22,7 +22,7 @@ services:
       - TZ=${TIMEZONE}
       - DELUGE_LOGLEVEL=error
     volumes:
-      - ${DOCKER_PATH}/deluge:/config 
+      - ${DOCKER_PATH}/deluge:/config
       - ${DOWNLOADS_PATH}:/downloads
     network_mode: "service:vpn"
     restart: unless-stopped
@@ -110,7 +110,7 @@ services:
       - ${DOCKER_PATH}/nginx_proxy_manager/data:/data
       - ${DOCKER_PATH}/nginx_proxy_manager/letsencrypt:/etc/letsencrypt
     restart: unless-stopped
-  
+
   radarr:
     image: linuxserver/radarr
     container_name: radarr
@@ -217,7 +217,6 @@ services:
       - 6881:6881 # deluge
       - 8191:8191 # FlareSolverr
       - 9696:9696 # Prowlarr
-      - 58846:58846
     volumes:
       - ${DOCKER_PATH}/vpn:/gluetun
     environment:
