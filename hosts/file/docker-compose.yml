@@ -1,0 +1,247 @@
+services:
+  bazarr:
+      image: lscr.io/linuxserver/bazarr:latest
+      container_name: bazarr
+      environment:
+        - PUID=${PUID}
+        - PGID=${PGID}
+        - TZ=${TIMEZONE}
+      volumes:
+        - ${DOCKER_PATH}/bazarr:/config
+        - ${MEDIA_PATH}:/media
+      ports:
+        - 6767:6767
+      restart: unless-stopped
+
+  deluge:
+    image: lscr.io/linuxserver/deluge:latest
+    container_name: deluge
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TIMEZONE}
+      - DELUGE_LOGLEVEL=error
+    volumes:
+      - ${DOCKER_PATH}/deluge:/config 
+      - ${DOWNLOADS_PATH}:/downloads
+    network_mode: "service:vpn"
+    restart: unless-stopped
+
+  edcm:
+    container_name: edcm
+    image: ghcr.io/steveharsant/edcm:latest
+    environment:
+      - EDCM_DEBUG=FALSE
+      - EMBY_ADDRESS=${EMBY_ADDRESS}
+      - EMBY_PORT=${EMBY_PORT}
+      - EMBY_TOKEN=${EMBY_TOKEN}
+      - EDCM_USE_SSL=${EDCM_USE_SSL}
+      - EDCM_SCAN_INTERVAL=${EDCM_SCAN_INTERVAL}
+    volumes:
+      - ${DOCKER_PATH}/edcm:/config
+    restart: unless-stopped
+
+  emby:
+    image: lscr.io/linuxserver/emby:latest
+    container_name: emby
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TIMEZONE}
+    volumes:
+      - ${DOCKER_PATH}/emby:/config
+      - ${MEDIA_PATH}:/media
+    ports:
+      - 8096:8096
+    restart: unless-stopped
+
+  flaresolverr:
+    image: ghcr.io/flaresolverr/flaresolverr:latest
+    container_name: flaresolverr
+    environment:
+      - LOG_LEVEL=info
+    network_mode: "service:vpn"
+    restart: unless-stopped
+
+  metube:
+    image: ghcr.io/alexta69/metube
+    container_name: metube
+    ports:
+      - "8081:8081"
+    volumes:
+      - ${DOWNLOADS_PATH}:/downloads
+    restart: unless-stopped
+
+  ombi:
+    image: linuxserver/ombi:latest
+    container_name: ombi
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TIMEZONE}
+    volumes:
+      - ${DOCKER_PATH}/ombi:/config
+    ports:
+      - 3579:3579
+    restart: unless-stopped
+
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TIMEZONE}
+    volumes:
+      - ${DOCKER_PATH}/prowlarr:/config
+    network_mode: "service:vpn"
+    restart: unless-stopped
+
+  proxy-manager:
+    image: 'jc21/nginx-proxy-manager:latest'
+    container_name: proxy-manager
+    ports:
+      - '80:80'
+      - '81:81'
+      - '443:443'
+    environment:
+      DISABLE_IPV6: 'true'
+    volumes:
+      - ${DOCKER_PATH}/nginx_proxy_manager/data:/data
+      - ${DOCKER_PATH}/nginx_proxy_manager/letsencrypt:/etc/letsencrypt
+    restart: unless-stopped
+  
+  radarr:
+    image: linuxserver/radarr
+    container_name: radarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TIMEZONE}
+    volumes:
+      - ${DOCKER_PATH}/radarr:/config
+      - ${MEDIA_PATH}/movies:/movies
+      - ${DOWNLOADS_PATH}:/downloads
+    ports:
+      - 7878:7878
+    restart: unless-stopped
+
+  samba:
+    image: dperson/samba
+    container_name: samba
+    environment:
+      TZ: ${TIMEZONE}
+      USERID: 0
+      GROUPID: 0
+    ports:
+      - "139:139/tcp"
+      - "445:445/tcp"
+    read_only: true
+    tmpfs:
+      - /tmp
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    volumes:
+      - ${DATA_PATH}:/data:z
+      - /mnt/ext1:/ext1:z
+    command: '-s "ext1;/ext1;yes;yes;no;${SMB_USER};${SMB_USER};${SMB_USER};ext1" -s "data;/data;yes;yes;no;${SMB_USER};${SMB_USER};${SMB_USER};data" -u "${SMB_USER};${SMB_PASS}" -p'
+
+  scrutiny:
+    image: ghcr.io/analogj/scrutiny:master-omnibus
+    container_name: scrutiny
+    cap_add:
+      - SYS_RAWIO
+    ports:
+      - "8080:8080" # webapp
+      - "8086:8086" # influxDB
+    volumes:
+      - ${DOCKER_PATH}/scrutiny/config:/opt/scrutiny/config
+      - ${DOCKER_PATH}/scrutiny/influxdb:/opt/scrutiny/influxdb
+      - /run/udev:/run/udev:ro
+    devices:
+      - "/dev/sda"
+      - "/dev/sdb"
+      - "/dev/sdc"
+      - "/dev/sdd"
+      - "/dev/sde"
+      - "/dev/sdf"
+    restart: unless-stopped
+
+  sonarr:
+    image: linuxserver/sonarr:latest
+    container_name: sonarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TIMEZONE}
+    volumes:
+      - ${DOCKER_PATH}/sonarr:/config
+      - ${MEDIA_PATH}/tv:/tv
+      - ${DOWNLOADS_PATH}:/downloads
+    ports:
+      - 8989:8989
+    restart: unless-stopped
+
+  syncthing:
+    image: lscr.io/linuxserver/syncthing:latest
+    container_name: syncthing
+    hostname: syncthing
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TIMEZONE}
+    volumes:
+      - ${DOCKER_PATH}/syncthing:/config
+      - ${DATA_PATH}:/data
+      - /mnt/ext1:/ext1
+    ports:
+      - 8384:8384
+      - 22000:22000/tcp
+      - 22000:22000/udp
+      - 21027:21027/udp
+    restart: unless-stopped
+
+  vpn:
+    image: qmcgaw/gluetun
+    container_name: vpn
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    ports:
+      - 8888:8888/tcp # gluetun HTTP proxy
+      - 8388:8388/tcp # gluetun Shadowsocks
+      - 8388:8388/udp # gluetun Shadowsocks
+      - 8112:8112 # deluge
+      - 6881:6881 # deluge
+      - 8191:8191 # FlareSolverr
+      - 9696:9696 # Prowlarr
+      - 58846:58846
+    volumes:
+      - ${DOCKER_PATH}/vpn:/gluetun
+    environment:
+      - HTTPPROXY=on
+      - VPN_SERVICE_PROVIDER=windscribe
+      - VPN_TYPE=wireguard
+      - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
+      - WIREGUARD_ADDRESSES=${WIREGUARD_ADDRESSES}
+      - WIREGUARD_PRESHARED_KEY=${WIREGUARD_PRESHARED_KEY}
+      - VPN_ENDPOINT_PORT=${VPN_ENDPOINT_PORT}
+      - SERVER_REGIONS=${SERVER_REGIONS}
+      - TZ=${TIMEZONE}
+    restart: unless-stopped
+
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_INCLUDE_RESTARTING=true
+      - WATCHTOWER_INCLUDE_STOPPED=true
+      - WATCHTOWER_REVIVE_STOPPED=true
+      - WATCHTOWER_SCHEDULE=0 0 19 * * SUN
+      - WATCHTOWER_TIMEOUT=1800s
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
