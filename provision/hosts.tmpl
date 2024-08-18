@@ -1,0 +1,12 @@
+[local]
+test ansible_host=127.0.0.1 ansible_user=root ansible_ssh_pass=password # Credentials for Test-Env only.
+
+[cloud]
+
+[debian_hosts:vars]
+ansible_user=<<ssh_username>>
+ansible_ssh_private_key_file=/path/to/private/key
+
+[debian_hosts:children]
+local
+cloud

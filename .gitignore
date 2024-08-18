@@ -11,3 +11,7 @@ crash.log
 **/credentials.pkr.hcl
 **/preseed_dev.cfg
 **/*.env
+provision/shared/vars.yml
+provision/vars.yml
+provision/hosts
+scripts/restart_deluge.sh

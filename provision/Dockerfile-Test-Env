@@ -1,0 +1,22 @@
+# Dockerfile to build a Debian based test environment
+# for provisioning. root password is 'password', so do not use in production!
+#
+# Build:
+# docker build -t deb-ssh -f .\Dockerfile-Test-Env .
+#
+# Creating the container:
+# docker run -d -p 22:22 --cap-add=NET_ADMIN --cap-add SYS_ADMIN --cap-add DAC_READ_SEARCH --name ssh deb-ssh
+
+FROM debian:latest
+
+RUN apt-get update && \
+    apt-get install -y python3 openssh-server sudo && \
+    apt-get clean
+
+RUN mkdir /var/run/sshd
+RUN echo 'root:password' | chpasswd
+RUN echo 'PermitRootLogin yes' > /etc/ssh/sshd_config
+
+EXPOSE 22
+
+CMD ["/usr/sbin/sshd", "-D"]

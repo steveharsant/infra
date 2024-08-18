@@ -1,0 +1,134 @@
+---
+- name: OS & Package Updates
+  hosts: debian_hosts
+  become: true
+  tasks:
+    - name: Update APT package index
+      apt:
+        update_cache: yes
+
+    - name: Install common packages
+      apt:
+        name:
+          - cifs-utils
+          - curl
+          - gnupg
+        state: present
+
+    - name: Upgrade all packages to the latest version
+      apt:
+        upgrade: dist
+        autoremove: yes
+        autoclean: yes
+
+- name: Install Tailscale
+  hosts: debian_hosts
+  become: true
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: Gather facts
+      setup:
+
+    - name: Check if running in a Docker container
+      command: cat /proc/1/cgroup
+      register: cgroup_info
+      changed_when: false
+
+    - name: Set Docker container fact
+      set_fact:
+        is_docker_container: "{{ 'docker' in cgroup_info.stdout }}"
+
+    - name: Run Tailscale install script
+      shell: |
+        curl -fsSL https://tailscale.com/install.sh | sh
+      args:
+        chdir: /tmp
+      when: not is_docker_container
+
+    - name: Start and enable the Tailscale service
+      systemd:
+        name: tailscaled
+        enabled: yes
+        state: started
+      when: not is_docker_container
+
+    - name: Connect to Tailscale Network
+      command: "tailscale up --authkey={{ tailscale_auth_key }}"
+      register: tailscale_output
+      changed_when: "'Success.' in tailscale_output.stdout"
+      when: not is_docker_container
+
+    - name: Debug Tailscale connection output
+      debug:
+        var: tailscale_output.stdout
+      when: not is_docker_container
+
+- name: Install Samba mount Samba
+  hosts: debian_hosts
+  become: true
+  vars_files:
+    - vars.yml
+
+  tasks:
+    - name: Create mount point directory
+      file:
+        path: "/{{ share_name }}"
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Determine Samba server IP based on host type
+      set_fact:
+        samba_ip: "{{ local_samba_ip }}"
+      when: "'local' in group_names"
+
+    - name: Determine Samba server IP for cloud servers
+      set_fact:
+        samba_ip: "{{ cloud_samba_ip }}"
+      when: "'cloud' in group_names"
+
+    - name: Mount the Samba share
+      mount:
+        path: "/{{ share_name }}"
+        src: "//{{ samba_ip }}/{{ share_name }}"
+        fstype: cifs
+        opts: "username={{ samba_user }},password={{ samba_password }},rw"
+        state: mounted
+
+    - name: Mount Samba share on boot via /etc/fstab
+      mount:
+        path: "/{{ share_name }}"
+        src: "//{{ samba_ip }}/{{ share_name }}"
+        fstype: cifs
+        opts: "username={{ samba_user }},password={{ samba_password }},rw"
+        state: present
+
+- name: Deploy Docker Compose File
+  hosts: debian_hosts
+  become: false
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: Get the host name
+      command: hostname
+      register: current_host
+
+    - name: Determine the path to the docker-compose.yml file
+      set_fact:
+        compose_file_path: "../hosts/{{ current_host.stdout }}/docker-compose.yml"
+
+    - name: Check if docker-compose.yml file exists
+      stat:
+        path: "{{ compose_file_path }}"
+      register: compose_file_stat
+
+    - name: Run docker-compose up
+      command: docker-compose -f "{{ compose_file_path }}" up -d
+      when: compose_file_stat.stat.exists
+
+    - name: Notify if docker-compose.yml file is missing
+      debug:
+        msg: "docker-compose.yml file not found for host: {{ current_host.stdout }}"
+      when: not compose_file_stat.stat.exists
