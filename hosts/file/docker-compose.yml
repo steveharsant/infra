@@ -13,20 +13,6 @@ services:
         - 6767:6767
       restart: unless-stopped
 
-  deluge:
-    image: lscr.io/linuxserver/deluge:latest
-    container_name: deluge
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TIMEZONE}
-      - DELUGE_LOGLEVEL=error
-    volumes:
-      - ${DOCKER_PATH}/deluge:/config
-      - ${DOWNLOADS_PATH}:/downloads
-    network_mode: "service:vpn"
-    restart: unless-stopped
-
   edcm:
     container_name: edcm
     image: ghcr.io/steveharsant/edcm:latest
@@ -97,9 +83,24 @@ services:
     network_mode: "service:vpn"
     restart: unless-stopped
 
-  proxy-manager:
+  qbit:
+      image: lscr.io/linuxserver/qbittorrent:latest
+      container_name: qbit
+      environment:
+        - PUID=1000
+        - PGID=1000
+        - TZ=${TIMEZONE}
+        - WEBUI_PORT=8112
+        - TORRENTING_PORT=6881
+      volumes:
+        - ${DOCKER_PATH}/qbit:/config
+        - ${DATA_PATH}/downloads:/downloads
+      network_mode: "service:vpn"
+      restart: unless-stopped
+
+  npm:
     image: 'jc21/nginx-proxy-manager:latest'
-    container_name: proxy-manager
+    container_name: npm
     ports:
       - '80:80'
       - '81:81'
@@ -107,8 +108,8 @@ services:
     environment:
       DISABLE_IPV6: 'true'
     volumes:
-      - ${DOCKER_PATH}/nginx_proxy_manager/data:/data
-      - ${DOCKER_PATH}/nginx_proxy_manager/letsencrypt:/etc/letsencrypt
+      - ${DOCKER_PATH}/npm/data:/data
+      - ${DOCKER_PATH}/npm/letsencrypt:/etc/letsencrypt
     restart: unless-stopped
 
   radarr:
@@ -202,6 +203,31 @@ services:
       - 21027:21027/udp
     restart: unless-stopped
 
+  tdarr:
+    container_name: tdarr
+    image: ghcr.io/haveagitgat/tdarr:latest
+    restart: unless-stopped
+    ports:
+      - 8265:8265 # webUI port
+      - 8266:8266 # server port
+      - 8267:8267 # Internal node port
+      - 8268:8268 # Extra node port
+    environment:
+      - internalNode=false
+      - nodeID=InternalNode
+      - PGID=${PGID}
+      - PUID=${PUID}
+      - serverIP=0.0.0.0
+      - serverPort=8266
+      - TZ=${TIMEZONE}
+      - UMASK_SET=002
+      - webUIPort=8265
+    volumes:
+      - ${DOCKER_PATH}/tdarr/server:/app/server
+      - ${DOCKER_PATH}/tdarr/config:/app/configs
+      - ${DOCKER_PATH}/tdarr/logs:/app/logs
+      - ${MEDIA_PATH}:/media
+
   vpn:
     image: qmcgaw/gluetun
     container_name: vpn
@@ -210,12 +236,12 @@ services:
     devices:
       - /dev/net/tun:/dev/net/tun
     ports:
-      - 8888:8888/tcp # gluetun HTTP proxy
+      - 6881:6881 # qbit
+      - 8112:8112 # qbit webUI
+      - 8191:8191 # FlareSolverr
       - 8388:8388/tcp # gluetun Shadowsocks
       - 8388:8388/udp # gluetun Shadowsocks
-      - 8112:8112 # deluge
-      - 6881:6881 # deluge
-      - 8191:8191 # FlareSolverr
+      - 8888:8888/tcp # gluetun HTTP proxy
       - 9696:9696 # Prowlarr
     volumes:
       - ${DOCKER_PATH}/vpn:/gluetun
