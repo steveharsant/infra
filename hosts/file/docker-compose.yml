@@ -1,4 +1,23 @@
 services:
+  backrest:
+    image: garethgeorge/backrest:latest
+    container_name: backrest
+    hostname: backrest
+    volumes:
+      - ${DOCKER_PATH}/backrest/data:/data
+      - ${DOCKER_PATH}/backrest/config:/config
+      - ${DOCKER_PATH}/backrest/cache:/cache
+      # - /MY-BACKUP-DATA:/userdata # [optional] mount local paths to backup here.
+      - /data/backup:/repos
+    environment:
+      - BACKREST_DATA=/data
+      - BACKREST_CONFIG=/config/config.json
+      - XDG_CACHE_HOME=/cache
+      - TZ=${TIMEZONE}
+    restart: unless-stopped
+    ports:
+      - 9898:9898
+      
   bazarr:
       image: lscr.io/linuxserver/bazarr:latest
       container_name: bazarr
