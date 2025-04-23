@@ -1,0 +1,30 @@
+services:
+  uptime-kuma:
+    image: louislam/uptime-kuma:latest
+    container_name: uptime-kuma
+    volumes:
+      - ${DOCKER_PATH}/uptime_kuma:/app/data
+    ports:
+      - 3001:3001
+    restart: unless-stopped
+
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    ports:
+      - 53:53/tcp
+      - 53:53/udp
+      - 80:80/tcp
+      - 443:443/tcp
+      # - 67:67/udp # Uncomment to enable DHCP server
+      # - 123:123/udp # Uncomment to enable NTP server
+    environment:
+      TZ: ${TIMEZONE}
+      FTLCONF_dns_listeningMode: all
+    volumes:
+      - ${DOCKER_PATH}/pihole:/etc/pihole
+    cap_add:
+      # - NET_ADMIN # Uncomment to enable DHCP server
+      # - SYS_TIME # Uncomment to enable NTP server
+      - SYS_NICE
+    restart: unless-stopped

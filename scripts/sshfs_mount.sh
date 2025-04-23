@@ -16,8 +16,8 @@ fi
 apk add sshfs
 echo 'sshfs dependency met'
 
-mkdir -p "/mnt/$backup_name"
+mkdir -p "/$backup_name"
 sshfs -o IdentityFile="$PRIVATE_KEY_PATH",StrictHostKeyChecking=no \
-      "$connection_string" "/mnt/$backup_name"
+      "$connection_string" "/$backup_name"
 
-echo "sshfs path successfully mounted from '$connection_string' to '/mnt/$backup_name'"
+echo "sshfs path successfully mounted from '$connection_string' to '/$backup_name'"
