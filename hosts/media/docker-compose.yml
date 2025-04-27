@@ -1,0 +1,11 @@
+services:
+  huntarr:
+    image: huntarr/huntarr:latest
+    container_name: huntarr
+    restart: unless-stopped
+    ports:
+      - "9705:9705"
+    volumes:
+      - ${DOCKER_PATH}/huntarr:/config
+    environment:
+      - TZ=${TIMEZONE}
