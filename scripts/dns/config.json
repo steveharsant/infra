@@ -1,0 +1,22 @@
+{
+  "domain" : "sharsant.com",
+  "pihole_address" : "192.168.0.10",
+  "pihole_secret_name" : "PIHOLE_PASSWORD",
+  "reverse_proxy" : "192.168.0.2",
+  "subdomains" : [
+    "backup",
+    "downloads",
+    "hunt",
+    "index",
+    "monitor",
+    "movies",
+    "photos",
+    "proxmox",
+    "proxy",
+    "request",
+    "subs",
+    "tv",
+    "watch",
+    "ws"
+  ]
+}
