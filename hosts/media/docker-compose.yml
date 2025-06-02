@@ -14,7 +14,7 @@ services:
     image: ghcr.io/steveharsant/purgarr:latest
     container_name: purgarr
     environment:
-      - LOG_LEVEL=${LOG_LEVEL}
+      - LOG_OUTPUT=web
       - QBIT_URL=${QBIT_URL}
       - QBIT_PASSWORD=${QBIT_PASSWORD}
       - QBIT_TOKEN_REFRESH_INTERVAL=${QBIT_TOKEN_REFRESH_INTERVAL}
