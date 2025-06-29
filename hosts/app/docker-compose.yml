@@ -6,8 +6,8 @@ services:
     volumes:
       - ${DOCKER_PATH}/tide-invite/config:/config
     environment:
-      - INVITE_DAY='Sunday'
-      - INVITE_TIME='12:15'
+      - INVITE_DAY=${INVITE_DAY}
+      - INVITE_TIME=${INVITE_TIME}
       - WILLYWEATHER_API_KEY=${WILLYWEATHER_API_KEY}
       - WILLYWEATHER_LOCATION_ID=${WILLYWEATHER_LOCATION_ID}
       - ATTENDEES=${ATTENDEES} # comma separated value
