@@ -1,0 +1,14 @@
+services:
+  tide-invite:
+    image: ghcr.io/steveharsant/tide-invite:latest
+    container_name: tide-invite
+    hostname: tide-invite
+      - ${DOCKER_PATH}/tide-invite/config:/config
+    environment:
+      - INVITE_DAY='Sunday'
+      - INVITE_TIME='12:15'
+      - WILLYWEATHER_API_KEY=${WILLYWEATHER_API_KEY}
+      - WILLYWEATHER_LOCATION_ID=${WILLYWEATHER_LOCATION_ID}
+      - ATTENDEES=${ATTENDEES} # comma separated value
+    restart: unless-stopped
+
