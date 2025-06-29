@@ -11,5 +11,6 @@ services:
       - WILLYWEATHER_API_KEY=${WILLYWEATHER_API_KEY}
       - WILLYWEATHER_LOCATION_ID=${WILLYWEATHER_LOCATION_ID}
       - ATTENDEES=${ATTENDEES} # comma separated value
+      - DEBUG=${DEBUG}
     restart: unless-stopped
 
