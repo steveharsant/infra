@@ -3,6 +3,7 @@ services:
     image: ghcr.io/steveharsant/tide-invite:latest
     container_name: tide-invite
     hostname: tide-invite
+    volumes:
       - ${DOCKER_PATH}/tide-invite/config:/config
     environment:
       - INVITE_DAY='Sunday'
