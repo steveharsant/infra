@@ -7,7 +7,7 @@
 # This script will build the binary with the current OpenSSL 3.1 libs already installed on the system.
 
 # Install dependencies
-sudo apt-install -y \
+sudo apt-get install -y \
   cmake \
   git \
   libasound2-dev \
