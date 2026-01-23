@@ -6,7 +6,8 @@
 # Spotifyd prebuilt binaries use OpenSSL 1.1 which is not abailable for Raspberry Pi's OS.
 # This script will build the binary with the current OpenSSL 3.1 libs already installed on the system.
 
-# Install dependencies
+# Install 
+sudo apt-get update
 sudo apt-get install -y \
   cmake \
   git \
