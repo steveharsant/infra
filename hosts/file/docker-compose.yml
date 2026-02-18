@@ -49,17 +49,6 @@ services:
         - 6767:6767
       restart: unless-stopped
 
-  bookshelf:
-    image: ghcr.io/pennydreadful/bookshelf:hardcover
-    container_name: bookshelf
-    volumes:
-      - ${MEDIA_PATH}/audiobooks:/audiobooks
-      - ${MEDIA_PATH}/books:/books
-      - ${DOCKER_PATH}/bookshelf:/config
-    ports:
-      - 8787:8787
-    restart: unless-stopped
-
   emby:
     image: lscr.io/linuxserver/emby:latest
     container_name: emby
@@ -158,6 +147,17 @@ services:
       - ${DOWNLOADS_PATH}:/downloads
     ports:
       - 7878:7878
+    restart: unless-stopped
+
+  readarr:
+    image: ghcr.io/pennydreadful/readarr:hardcover
+    container_name: readarr
+    volumes:
+      - ${MEDIA_PATH}/audiobooks:/audiobooks
+      - ${MEDIA_PATH}/books:/books
+      - ${DOCKER_PATH}/readarr:/config
+    ports:
+      - 8787:8787
     restart: unless-stopped
 
   samba:
