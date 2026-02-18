@@ -152,6 +152,10 @@ services:
   readarr:
     image: ghcr.io/pennydreadful/bookshelf:hardcover
     container_name: readarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TIMEZONE}
     volumes:
       - ${MEDIA_PATH}/audiobooks:/audiobooks
       - ${MEDIA_PATH}/books:/books
