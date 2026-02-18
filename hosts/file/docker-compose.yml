@@ -49,6 +49,17 @@ services:
         - 6767:6767
       restart: unless-stopped
 
+  bookshelf:
+    image: ghcr.io/pennydreadful/bookshelf:hardcover
+    container_name: bookshelf
+    volumes:
+      - ${MEDIA_PATH}/audiobooks:/audiobooks
+      - ${MEDIA_PATH}/books:/books
+      - ${DOCKER_PATH}/bookshelf:/config
+    ports:
+      - 8787:8787
+    restart: unless-stopped
+
   emby:
     image: lscr.io/linuxserver/emby:latest
     container_name: emby
@@ -69,18 +80,6 @@ services:
     environment:
       - LOG_LEVEL=info
     network_mode: "service:vpn"
-    restart: unless-stopped
-
-  listenarr:
-    image: ghcr.io/therobbiedavis/listenarr:canary
-    container_name: listenarr
-    user: 1000:1000
-    volumes:
-      - ${MEDIA_PATH}/audiobooks:/audiobooks
-      - ${MEDIA_PATH}/podcasts:/podcasts
-      - ${DOCKER_PATH}/listenarr:/app/config
-    ports:
-      - 4545:4545
     restart: unless-stopped
 
   metube:
