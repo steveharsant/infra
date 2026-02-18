@@ -5,8 +5,8 @@ services:
     ports:
      - 13378:80
     volumes:
-      - ${MEDIA_PATH}:/audiobooks:/audiobooks
-      - ${MEDIA_PATH}:/podcasts:/podcasts
+      - ${MEDIA_PATH}/audiobooks:/audiobooks
+      - ${MEDIA_PATH}/podcasts:/podcasts
       - ${DOCKER_PATH}/abs/config:/config
       - ${DOCKER_PATH}/abs/metadata:/metadata
     restart: unless-stopped
@@ -76,8 +76,8 @@ services:
     container_name: listenarr
     user: 1000:1000
     volumes:
-      - ${MEDIA_PATH}:/audiobooks:/audiobooks
-      - ${MEDIA_PATH}:/podcasts:/podcasts
+      - ${MEDIA_PATH}/audiobooks:/audiobooks
+      - ${MEDIA_PATH}/podcasts:/podcasts
       - ${DOCKER_PATH}/listenarr:/app/config
     ports:
       - 4545:4545
