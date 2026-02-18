@@ -150,7 +150,7 @@ services:
     restart: unless-stopped
 
   readarr:
-    image: ghcr.io/pennydreadful/readarr:hardcover
+    image: ghcr.io/pennydreadful/bookshelf:hardcover
     container_name: readarr
     volumes:
       - ${MEDIA_PATH}/audiobooks:/audiobooks
