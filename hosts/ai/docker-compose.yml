@@ -13,32 +13,32 @@ services:
       - CONFIG=/opt/doods/config/config.yaml
       
   whisper:
-    image: rhasspy/wyoming-faster-whisper:latest
+    image: lscr.io/linuxserver/faster-whisper:latest
     container_name: wyoming-whisper
     restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - WHISPER_MODEL=small # Options: tiny, base, small, medium
+      - WHISPER_LANG=en
+      - WHISPER_BEAM=1
     ports:
       - "10300:10300"
     volumes:
-      - ${DOCKER_PATH}/whisper/data:/data
-    command: >
-      --uri tcp://0.0.0.0:10300
-      --model small 
-      --language en
-      --device cpu
-      --compute-type int8
-    # Optional: change --model to tiny, base, small, medium
-    # Optional: change --language to your language code e.g. fr, de, es
-    # int8 compute type reduces RAM usage with minimal accuracy loss on CPU
+      - ${DOCKER_PATH}/whisper/data:/config
+    
 
   piper:
-    image: rhasspy/wyoming-piper:latest
+    image: lscr.io/linuxserver/piper:latest
     container_name: wyoming-piper
     restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - PIPER_VOICE=en_GB-alba-medium
     ports:
       - "10200:10200"
     volumes:
-      - ${DOCKER_PATH}//piper/data:/data
-    command: >
-      --uri tcp://0.0.0.0:10200
-      --voice en_GB-alba-medium
-    # Full list: https://rhasspy.github.io/piper-samples/
+      - ${DOCKER_PATH}/piper/data:/config
