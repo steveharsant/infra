@@ -1,0 +1,44 @@
+services:
+  doods:
+    image: snowzach/doods2:latest
+    container_name: doods
+    restart: unless-stopped
+    ports:
+      - "8080:8080"   # REST API
+      - "8443:8443"   # gRPC
+    volumes:
+      - ${DOCKER_PATH}/doods/config:/opt/doods/config
+      - ${DOCKER_PATH}/doods/models:/opt/doods/models
+    environment:
+      - CONFIG=/opt/doods/config/config.yaml
+      
+  whisper:
+    image: rhasspy/wyoming-faster-whisper:latest
+    container_name: wyoming-whisper
+    restart: unless-stopped
+    ports:
+      - "10300:10300"
+    volumes:
+      - ${DOCKER_PATH}/whisper/data:/data
+    command: >
+      --uri tcp://0.0.0.0:10300
+      --model small 
+      --language en
+      --device cpu
+      --compute-type int8
+    # Optional: change --model to tiny, base, small, medium
+    # Optional: change --language to your language code e.g. fr, de, es
+    # int8 compute type reduces RAM usage with minimal accuracy loss on CPU
+
+  piper:
+    image: rhasspy/wyoming-piper:latest
+    container_name: wyoming-piper
+    restart: unless-stopped
+    ports:
+      - "10200:10200"
+    volumes:
+      - ${DOCKER_PATH}//piper/data:/data
+    command: >
+      --uri tcp://0.0.0.0:10200
+      --voice en_GB-alba-medium
+    # Full list: https://rhasspy.github.io/piper-samples/
