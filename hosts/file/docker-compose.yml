@@ -185,26 +185,40 @@ services:
       - /mnt/ext1:/ext1:z
     command: '-s "ext1;/ext1;yes;yes;no;${SMB_USER};${SMB_USER};${SMB_USER};ext1" -s "data;/data;yes;yes;no;${SMB_USER};${SMB_USER};${SMB_USER};data" -u "${SMB_USER};${SMB_PASS}" -p'
 
-  scrutiny:
-    image: ghcr.io/analogj/scrutiny:master-omnibus
-    container_name: scrutiny
-    cap_add:
-      - SYS_RAWIO
+  # scrutiny:
+  #   image: ghcr.io/analogj/scrutiny:master-omnibus
+  #   container_name: scrutiny
+  #   cap_add:
+  #     - SYS_RAWIO
+  #   ports:
+  #     - "8080:8080" # webUI
+  #     - "8086:8086" # influxDB
+  #   volumes:
+  #     - ${DOCKER_PATH}/scrutiny/config:/opt/scrutiny/config
+  #     - ${DOCKER_PATH}/scrutiny/influxdb:/opt/scrutiny/influxdb
+  #     - /run/udev:/run/udev:ro
+  #   devices:
+  #     - "/dev/sda"
+  #     - "/dev/sdb"
+  #     - "/dev/sdc"
+  #     - "/dev/sdd"
+  #     - "/dev/sde"
+  #     - "/dev/sdf"
+  #   restart: unless-stopped
+
+  shelfmark:
+    image: ghcr.io/calibrain/shelfmark:latest
+    container_name: shelfmark
+    environment:
+      PUID: 1000
+      PGID: 1000
     ports:
-      - "8080:8080" # webUI
-      - "8086:8086" # influxDB
-    volumes:
-      - ${DOCKER_PATH}/scrutiny/config:/opt/scrutiny/config
-      - ${DOCKER_PATH}/scrutiny/influxdb:/opt/scrutiny/influxdb
-      - /run/udev:/run/udev:ro
-    devices:
-      - "/dev/sda"
-      - "/dev/sdb"
-      - "/dev/sdc"
-      - "/dev/sdd"
-      - "/dev/sde"
-      - "/dev/sdf"
+      - 8084:8084
     restart: unless-stopped
+    volumes:
+      - ${MEDIA_PATH}/books:/books
+      - ${DOCKER_PATH}/shelfmark:/config
+      - ${DOWNLOADS_PATH}:/downloads
 
   sonarr:
     image: linuxserver/sonarr:latest
