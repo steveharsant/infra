@@ -71,6 +71,17 @@ services:
     network_mode: "service:vpn"
     restart: unless-stopped
 
+  kavita:
+    image: jvmilazz0/kavita:latest
+    container_name: kavita
+    ports: 5000:5000
+    volumes:
+      - ${DOCKER_PATH}/kavita:/kavita/
+      - ${MEDIA_PATH}/books:/books
+    environment:
+      - TZ=${TIMEZONE}
+    restart: unless-stopped
+
   metube:
     image: ghcr.io/alexta69/metube
     container_name: metube
