@@ -1,0 +1,12 @@
+services:
+  agent1:
+    depends_on:
+      - server
+    image: custom-minimal-agent:latest
+    container_name: agent1
+    hostname: agent1
+    environment:
+      - SERVER_URL=${TEAMCITY_SERVER_URL}
+      - AGENT_NAME=agent1
+    volumes:
+      - /data/docker/teamcity/agent1:/data/teamcity_agent/conf
