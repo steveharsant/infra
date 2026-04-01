@@ -1,15 +1,4 @@
 services:
-  huntarr:
-    image: ghcr.io/plexguide/huntarr:latest
-    container_name: huntarr
-    restart: always
-    ports:
-      - "9705:9705"
-    volumes:
-      - ${DOCKER_PATH}/huntarr:/config
-    environment:
-      - TZ=${TIMEZONE}
-
   purgarr:
     image: ghcr.io/steveharsant/purgarr:latest
     container_name: purgarr
