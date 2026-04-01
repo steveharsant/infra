@@ -275,17 +275,3 @@ services:
       - SERVER_REGIONS=${SERVER_REGIONS}
       - TZ=${TIMEZONE}
     restart: unless-stopped
-
-  watchtower:
-    image: containrrr/watchtower
-    container_name: watchtower
-    environment:
-      - WATCHTOWER_CLEANUP=true
-      - WATCHTOWER_INCLUDE_RESTARTING=true
-      - WATCHTOWER_INCLUDE_STOPPED=true
-      - WATCHTOWER_REVIVE_STOPPED=true
-      - WATCHTOWER_SCHEDULE=0 0 19 * * SUN
-      - WATCHTOWER_TIMEOUT=1800s
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    restart: unless-stopped
