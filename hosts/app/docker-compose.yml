@@ -1,4 +1,18 @@
 services:
+  purgarr:
+    image: ghcr.io/steveharsant/purgarr:latest
+    container_name: purgarr
+    environment:
+      - LOG_OUTPUT=web
+      - QBIT_URL=${QBIT_URL}
+      - QBIT_PASSWORD=${QBIT_PASSWORD}
+      - QBIT_TOKEN_REFRESH_INTERVAL=${QBIT_TOKEN_REFRESH_INTERVAL}
+      - SONARR_API_KEY=${SONARR_API_KEY}
+      - SONARR_URL=${SONARR_URL}
+      - RADARR_API_KEY=${RADARR_API_KEY}
+      - RADARR_URL=${RADARR_URL}
+    restart: unless-stopped
+
   # tide-invite:
   #   image: ghcr.io/steveharsant/tide-invite:latest
   #   container_name: tide-invite
@@ -13,4 +27,3 @@ services:
   #     - ATTENDEES=${ATTENDEES} # comma separated value
   #     - DEBUG=${DEBUG}
   #   restart: unless-stopped
-
