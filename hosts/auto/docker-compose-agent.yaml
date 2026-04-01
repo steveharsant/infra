@@ -3,6 +3,10 @@ services:
     image: custom-minimal-agent:latest
     container_name: agent1
     hostname: agent1
+    entrypoint: >
+      sh -c '[ -z "$(ls -A /seed)" ]
+             && cp -a /opt/buildagent/. /seed/
+             || echo "Already seeded, skipping."'
     environment:
       - SERVER_URL=${TEAMCITY_SERVER_URL}
       - AGENT_NAME=agent1
