@@ -1,0 +1,22 @@
+name: send-ntfy-notification
+title: Send ntfy Notification
+description: Sends a notification message to an ntfy topic URL
+
+inputs:
+  - ntfy_url:
+      type: text
+      label: ntfy URL
+      description: "Full ntfy topic URL, e.g. https://ntfy.sh/mytopic"
+      required: true
+  - ntfy_message:
+      type: text
+      label: Message
+      description: The message body to send
+      required: true
+
+steps:
+  - name: Post ntfy message
+    script: |
+      curl \
+        -d "%ntfy_message%" \
+        "%ntfy_url%"
