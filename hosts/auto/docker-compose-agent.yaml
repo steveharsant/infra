@@ -1,7 +1,5 @@
 services:
   agent1:
-    depends_on:
-      - server
     image: custom-minimal-agent:latest
     container_name: agent1
     hostname: agent1
