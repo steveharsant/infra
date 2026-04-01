@@ -2,6 +2,8 @@ services:
   purgarr:
     image: ghcr.io/steveharsant/purgarr:latest
     container_name: purgarr
+    ports:
+      - 9891:9891
     environment:
       - LOG_OUTPUT=web
       - QBIT_URL=${QBIT_URL}
