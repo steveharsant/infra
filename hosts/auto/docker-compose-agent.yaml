@@ -19,3 +19,24 @@ services:
       - AGENT_NAME=agent1
     volumes:
       - /data/docker/teamcity/agent1:/opt/buildagent
+
+  agent2-init:
+    image: custom-minimal-agent:latest
+    entrypoint: >-
+      sh -c 'if [ -z "$(ls -A /seed)" ]; then echo "Seeding..."; cp -a /opt/buildagent/. /seed/; else echo "Already seeded, skipping."; fi'
+    volumes:
+      - /data/docker/teamcity/agent2:/seed
+    restart: "no"
+    
+  agent2:
+    image: custom-minimal-agent:latest
+    container_name: agent2
+    hostname: agent2
+    depends_on:
+      agent2-init:
+        condition: service_completed_successfully
+    environment:
+      - SERVER_URL=${TEAMCITY_SERVER_URL}
+      - AGENT_NAME=agent2
+    volumes:
+      - /data/docker/teamcity/agent2:/opt/buildagent
