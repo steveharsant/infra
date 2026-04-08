@@ -14,7 +14,7 @@ services:
       
   whisper:
     image: lscr.io/linuxserver/faster-whisper:latest
-    container_name: wyoming-whisper
+    container_name: whisper
     restart: unless-stopped
     environment:
       - PUID=1000
@@ -31,7 +31,7 @@ services:
 
   piper:
     image: lscr.io/linuxserver/piper:latest
-    container_name: wyoming-piper
+    container_name: piper
     restart: unless-stopped
     environment:
       - PUID=1000
