@@ -11,7 +11,7 @@ services:
       - ${DOCKER_PATH}/doods/models:/opt/doods/models
     environment:
       - CONFIG=/opt/doods/config/config.yaml
-      
+
   whisper:
     image: lscr.io/linuxserver/faster-whisper:latest
     container_name: whisper
@@ -27,7 +27,18 @@ services:
       - "10300:10300"
     volumes:
       - ${DOCKER_PATH}/whisper/data:/config
-    
+
+  subgen:
+    image: mccloud/subgen:cpu
+    container_name: subgen
+    restart: unless-stopped
+    ports:
+      - 9000:9000
+    environment:
+      - TRANSCRIBE_DEVICE=cpu
+      - WHISPER_MODEL=medium
+      - CONCURRENT_TRANSCRIPTIONS=2
+
 
   piper:
     image: lscr.io/linuxserver/piper:latest
