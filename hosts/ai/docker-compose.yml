@@ -18,25 +18,7 @@ services:
     ports:
       - "11434:11434"
     volumes:
-      - ./ollama:/root/.ollama
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:11434"]
-      interval: 5s
-      timeout: 3s
-      retries: 10
-
-  ollama-pull:
-    image: ollama/ollama
-    container_name: ollama-pull
-    volumes:
-      - ./ollama:/root/.ollama
-    depends_on:
-      ollama:
-        condition: service_healthy
-    entrypoint: ["ollama", "pull", "gemma4:e4b"]
-    environment:
-      - OLLAMA_HOST=http://ollama:11434
-    restart: "no"
+      - ${DOCKER_PATH}/ollama:/root/.ollama
 
   piper:
     image: lscr.io/linuxserver/piper:latest
