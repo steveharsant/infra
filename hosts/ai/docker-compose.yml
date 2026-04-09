@@ -12,6 +12,46 @@ services:
     environment:
       - CONFIG=/opt/doods/config/config.yaml
 
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ./ollama:/root/.ollama
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  ollama-pull:
+    image: ollama/ollama
+    container_name: ollama-pull
+    volumes:
+      - ./ollama:/root/.ollama
+    depends_on:
+      ollama:
+        condition: service_healthy
+    entrypoint: ["ollama", "pull", "gemma4:e4b"]
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+    restart: "no"
+
+  piper:
+    image: lscr.io/linuxserver/piper:latest
+    container_name: piper
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - PIPER_VOICE=en_GB-alba-medium
+    ports:
+      - "10200:10200"
+    volumes:
+      - ${DOCKER_PATH}/piper/data:/config
+
   whisper:
     image: lscr.io/linuxserver/faster-whisper:latest
     container_name: whisper
@@ -27,29 +67,3 @@ services:
       - "10300:10300"
     volumes:
       - ${DOCKER_PATH}/whisper/data:/config
-
-  subgen:
-    image: mccloud/subgen:cpu
-    container_name: subgen
-    restart: unless-stopped
-    ports:
-      - 9000:9000
-    environment:
-      - TRANSCRIBE_DEVICE=cpu
-      - WHISPER_MODEL=medium
-      - CONCURRENT_TRANSCRIPTIONS=2
-
-
-  piper:
-    image: lscr.io/linuxserver/piper:latest
-    container_name: piper
-    restart: unless-stopped
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Etc/UTC
-      - PIPER_VOICE=en_GB-alba-medium
-    ports:
-      - "10200:10200"
-    volumes:
-      - ${DOCKER_PATH}/piper/data:/config
