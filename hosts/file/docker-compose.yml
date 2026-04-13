@@ -9,6 +9,7 @@ services:
       - ${MEDIA_PATH}/podcasts:/podcasts
       - ${DOCKER_PATH}/abs/config:/config
       - ${DOCKER_PATH}/abs/metadata:/metadata
+    user: 1000:1000
     restart: unless-stopped
 
   backrest:
@@ -101,6 +102,8 @@ services:
       - '443:443'
     environment:
       DISABLE_IPV6: 'true'
+      PUID: 1000
+      PGID: 1000
     volumes:
       - ${DOCKER_PATH}/npm/data:/data
       - ${DOCKER_PATH}/npm/letsencrypt:/etc/letsencrypt
