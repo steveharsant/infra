@@ -24,7 +24,25 @@ services:
       - ${DOCKER_PATH}/boxarr:/config
     restart: unless-stopped
     environment:
-      - TZ=${TIMEZONE} 
+      - TZ=${TIMEZONE}
+
+  sortarr:
+    image: ghcr.io/jaredharper1/sortarr:latest    
+    container_name: sortarr
+    ports:
+      - "9595:8787"
+    environment:
+      - SORTARR_CONFIG_PATH=/data/Sortarr.env
+      - ENV_FILE_PATH=/data/Sortarr.env
+      - CACHE_SECONDS=300
+      - SORTARR_STORE_SECRETS_AS_FILES=1
+      - SORTARR_ALLOW_PLAINTEXT_SECRETS=0
+      - SORTARR_ALLOW_UNSAFE_EPHEMERAL_RECOVERY=0
+    volumes:
+      - ${DOCKER_PATH}/sortarr:/data
+      - ${FILE_PATH}/media:/media
+      - ${DOCKER_PATH}/sortarr:/data/.env:/app/.env    
+    restart: unless-stopped
 
   # tide-invite:
   #   image: ghcr.io/steveharsant/tide-invite:latest
