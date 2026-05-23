@@ -19,6 +19,8 @@ services:
       - AGENT_NAME=agent1
     volumes:
       - /data/docker/teamcity/agent1:/opt/buildagent
+      - /data:/data
+    restart: unless-stopped
 
   agent2-init:
     image: custom-minimal-agent:latest
@@ -27,7 +29,7 @@ services:
     volumes:
       - /data/docker/teamcity/agent2:/seed
     restart: "no"
-    
+
   agent2:
     image: custom-minimal-agent:latest
     container_name: agent2
@@ -40,3 +42,5 @@ services:
       - AGENT_NAME=agent2
     volumes:
       - /data/docker/teamcity/agent2:/opt/buildagent
+      - /data:/data
+    restart: unless-stopped

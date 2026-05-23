@@ -7,3 +7,4 @@ services:
       - /data/docker/teamcity/server/logs:/opt/teamcity/logs
     ports:
       - 8111:8111
+    restart: unless-stopped
