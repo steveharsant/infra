@@ -45,7 +45,7 @@ services:
     restart: unless-stopped
 
   subtractor:
-    build: subtractor:latest
+    image: subtractor:latest
     container_name: subtractor
     restart: unless-stopped
     ports:
