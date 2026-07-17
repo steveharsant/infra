@@ -27,7 +27,7 @@ services:
       - TZ=${TIMEZONE}
 
   sortarr:
-    image: ghcr.io/jaredharper1/sortarr:latest    
+    image: ghcr.io/jaredharper1/sortarr:latest
     container_name: sortarr
     ports:
       - "9595:8787"
@@ -41,8 +41,39 @@ services:
     volumes:
       - ${DOCKER_PATH}/sortarr:/data
       - ${FILE_PATH}/media:/media
-      - ${DOCKER_PATH}/sortarr:/data/.env:/app/.env    
+      - ${DOCKER_PATH}/sortarr:/data/.env:/app/.env
     restart: unless-stopped
+
+  subtractor:
+    build: subtractor:latest
+    container_name: subtractor
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      SUBTRACTOR_USERNAME: ${SUBTRACTOR_USERNAME:-admin}
+      SUBTRACTOR_PASSWORD: ${SUBTRACTOR_PASSWORD}
+      SUBTRACTOR_RETENTION_DAYS: "14"     # days uploads are kept before auto-delete
+      SUBTRACTOR_MAX_UPLOAD_MB: "8192"    # max upload size in MiB
+      SUBTRACTOR_SECURE_COOKIES: "true"  # set "true" when behind an HTTPS reverse proxy
+      SUBTRACTOR_LISTEN: ":8080"
+      SUBTRACTOR_DATA_DIR: /data
+    # volumes:
+    #   - ${DOCKER_PATH}/subtractor:/data
+    # Hardening
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 1g
 
   # tide-invite:
   #   image: ghcr.io/steveharsant/tide-invite:latest
