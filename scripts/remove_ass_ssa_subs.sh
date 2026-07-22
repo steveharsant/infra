@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# Removes embedded ass and ssa subs from video files.
-# Takes 1 input (file path). To use recursevely use:
+# Removes embedded ass, ssa, and dvd_subtitle subs from video files.
+# Takes 1 input (file path). To use recursively use:
 # find /path/to/media -type f -print0 | xargs -0 -P 4 -I {} ./remove_ass_ssa_subs.sh "{}"
 
 input="$1"
@@ -17,15 +17,15 @@ subs_to_remove=$(ffprobe -v error \
                          -select_streams s \
                          -show_entries stream=index,codec_name \
                          -of default=noprint_wrappers=1 "$input" |
-    awk '/^index=/ {idx=$0} /^codec_name=(ass|ssa)/ {print idx}' |
+    awk '/^index=/ {idx=$0} /^codec_name=(ass|ssa|dvd_subtitle)/ {print idx}' |
     cut -d= -f2)
 
 if [[ -z "$subs_to_remove" ]]; then
-    echo "No embedded .ass or .ssa subtitles found in $input"
+    echo "No embedded .ass, .ssa, or .dvd_subtitle subtitles found in $input"
     exit 0
 fi
 
-echo "Removing .ass/.ssa subtitle streams: $subs_to_remove"
+echo "Removing .ass/.ssa/.dvd_subtitle subtitle streams: $subs_to_remove"
 
 map_args=(-map 0)
 for sid in $subs_to_remove; do
