@@ -26,3 +26,16 @@ services:
     ports:
       - 5432:5432
     restart: unless-stopped
+
+# Must run this in the NC container to generate the JWT secret key for Whiteboard:
+#    occ config:app:set whiteboard collabBackendUrl --value="https://<your-domain>:3002"
+#    occ config:app:set whiteboard jwt_secret_key --value="<same value as WHITEBOARD_JWT_SECRET_KEY>"
+  whiteboard:
+    image: ghcr.io/nextcloud-releases/whiteboard:stable
+    container_name: whiteboard
+    environment:
+      - NEXTCLOUD_URL=${NEXTCLOUD_URL}
+      - JWT_SECRET_KEY=${WHITEBOARD_JWT_SECRET_KEY}
+    ports:
+      - 3002:3002
+    restart: unless-stopped
