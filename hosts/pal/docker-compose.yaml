@@ -1,18 +1,4 @@
 services:
-  postgres:
-    image: postgres:16
-    container_name: postgres
-    environment:
-      - TZ=${TIMEZONE}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
-    volumes:
-      - ${DOCKER_PATH}/postgres/data:/var/lib/postgresql/data
-    ports:
-      - 5432:5432
-    restart: unless-stopped
-
   nextcloud:
     image: lscr.io/linuxserver/nextcloud:latest
     container_name: nextcloud
@@ -25,4 +11,18 @@ services:
       - ${PAL_PATH}/data:/data
     ports:
       - 443:443
+    restart: unless-stopped
+
+  nextcloud_db:
+    image: postgres:16
+    container_name: postgres
+    environment:
+      - TZ=${TIMEZONE}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - ${DOCKER_PATH}/nextcloud/db:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
     restart: unless-stopped
