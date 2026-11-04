@@ -159,7 +159,6 @@ services:
     volumes:
       - ${DOCKER_PATH}/radarr:/config
       - ${MEDIA_PATH}/movies:/movies
-      - ${MEDIA_PATH}/kids/movies:/kids/movies
       - ${DOWNLOADS_PATH}:/downloads
     ports:
       - 7878:7878
@@ -246,7 +245,6 @@ services:
     volumes:
       - ${DOCKER_PATH}/sonarr:/config
       - ${MEDIA_PATH}/tv:/tv
-      - ${MEDIA_PATH}/kids/tv:/kids/tv
       - ${DOWNLOADS_PATH}:/downloads
     ports:
       - 8989:8989
