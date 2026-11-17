@@ -1,16 +1,4 @@
 services:
-  abs:
-    image: ghcr.io/advplyr/audiobookshelf:latest
-    container_name: abs
-    ports:
-     - 13378:80
-    volumes:
-      - ${MEDIA_PATH}/audiobooks:/audiobooks
-      - ${MEDIA_PATH}/podcasts:/podcasts
-      - ${DOCKER_PATH}/abs/config:/config
-      - ${DOCKER_PATH}/abs/metadata:/metadata
-    user: 1000:1000
-    restart: unless-stopped
 
   backrest:
     image: garethgeorge/backrest:latest
@@ -70,18 +58,6 @@ services:
     environment:
       - LOG_LEVEL=info
     network_mode: "service:vpn"
-    restart: unless-stopped
-
-  kavita:
-    image: jvmilazz0/kavita:latest
-    container_name: kavita
-    ports: 
-      - 5000:5000
-    volumes:
-      - ${DOCKER_PATH}/kavita:/kavita/
-      - ${MEDIA_PATH}/books:/books
-    environment:
-      - TZ=${TIMEZONE}
     restart: unless-stopped
 
   metube:
@@ -164,21 +140,6 @@ services:
       - 7878:7878
     restart: unless-stopped
 
-  readarr:
-    image: ghcr.io/pennydreadful/bookshelf:hardcover
-    container_name: readarr
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TIMEZONE}
-    volumes:
-      - ${MEDIA_PATH}/audiobooks:/audiobooks
-      - ${MEDIA_PATH}/books:/books
-      - ${DOCKER_PATH}/readarr:/config
-    ports:
-      - 8787:8787
-    restart: unless-stopped
-
   samba:
     image: dperson/samba
     container_name: samba
@@ -198,7 +159,7 @@ services:
     volumes:
       - ${DATA_PATH}:/data:z
       - /mnt/ext1:/ext1:z
-    command: '-s "ext1;/ext1;yes;yes;no;${SMB_USER};${SMB_USER};${SMB_USER};ext1" -s "data;/data;yes;yes;no;${SMB_USER};${SMB_USER};${SMB_USER};data" -u "${SMB_USER};${SMB_PASS}" -p'
+    command: '-s "ext1;/ext1;yes;yes;no;${SMB_USER};${SMB_USER};${SMB_USER};ext1" -s "data;/data;yes;yes;no;${SMB_USER};${SMB_USER};${SMB_USER};data" -u "${SMB_USER};${SMB_PASS}"'
 
   # scrutiny:
   #   image: ghcr.io/analogj/scrutiny:master-omnibus
@@ -220,20 +181,6 @@ services:
   #     - "/dev/sde"
   #     - "/dev/sdf"
   #   restart: unless-stopped
-
-  shelfmark:
-    image: ghcr.io/calibrain/shelfmark:latest
-    container_name: shelfmark
-    environment:
-      PUID: 1000
-      PGID: 1000
-    ports:
-      - 8084:8084
-    restart: unless-stopped
-    volumes:
-      - ${MEDIA_PATH}/books:/books
-      - ${DOCKER_PATH}/shelfmark:/config
-      - ${DOWNLOADS_PATH}:/downloads
 
   sonarr:
     image: linuxserver/sonarr:latest
