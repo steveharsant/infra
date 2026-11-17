@@ -145,8 +145,8 @@ services:
     container_name: samba
     environment:
       TZ: ${TIMEZONE}
-      USERID: 0
-      GROUPID: 0
+      USERID: ${PUID}
+      GROUPID: ${PGID}
     ports:
       - "139:139/tcp"
       - "445:445/tcp"
